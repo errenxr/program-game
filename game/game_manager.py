@@ -26,9 +26,6 @@ class GameManager:
         # statistik (opsional tapi bagus untuk TA)
         self.completed_questions = 0
 
-    # -----------------------------
-    # START GAME
-    # -----------------------------
     def start_game(self):
         self.start_time = time.time()
         self.current_round = 1
@@ -38,9 +35,6 @@ class GameManager:
         self.generate_new_question()
         return self.current_question
 
-    # -----------------------------
-    # GENERATE SOAL BARU
-    # -----------------------------
     def generate_new_question(self):
         self.base_images = generate_base_images(
             self.images, self.age, self.level
@@ -48,9 +42,6 @@ class GameManager:
         self.current_selected_items = []
         self.current_question = shuffle_question(self.base_images)
 
-    # -----------------------------
-    # HANDLE INPUT
-    # -----------------------------
     def select_item(self, item):
         if self.is_game_over():
             return None
@@ -76,9 +67,6 @@ class GameManager:
 
         return is_valid
 
-    # -----------------------------
-    # CEK GAME SELESAI (BERDASARKAN WAKTU)
-    # -----------------------------
     def is_game_over(self):
         if self.start_time is None:
             return False
@@ -86,9 +74,6 @@ class GameManager:
         elapsed_time = time.time() - self.start_time
         return elapsed_time >= self.max_time
 
-    # -----------------------------
-    # SISA WAKTU
-    # -----------------------------
     def get_remaining_time(self):
         if self.start_time is None:
             return self.max_time
@@ -109,10 +94,7 @@ class GameManager:
             "completed_questions": self.completed_questions,
             "remaining_time": self.get_remaining_time(),
         }
-
-    # -----------------------------
-    # HASIL AKHIR
-    # -----------------------------
+    
     def get_result(self):
         return {
             "score": self.scoring.get_score(),

@@ -6,7 +6,7 @@ import tkinter as tk
 from tkinter import font as tkfont
 from game.game_manager import GameManager
 from PIL import Image, ImageTk
-from game.api_client import get_active_user, start_session, end_session
+from game.api_client import get_active_anak, start_session, end_session
 
 IMAGES = ["airplane", "ant", "apple", "bicycle", "blueberry", "broccoli", "bulldozer",
           "capung", "car", "cat", "clownfish", "dog", "dolphin", "duck",
@@ -95,11 +95,11 @@ class GameScreen:
         self.root.resizable(False, False)
 
         self.mode = mode
-        self.user = get_active_user()
+        self.user = get_active_anak()
         if not self.user:
-            print("Tidak ada user login!")
+            print("Tidak ada anak aktif dari web!")
         else:
-            print("User aktif:", self.user["nama_anak"])
+            print("Anak aktif:", self.user["nama_anak"])
         
         if self.user:
             self.session_id = start_session(self.user["id"])
@@ -134,7 +134,11 @@ class GameScreen:
         else:
             print("Umur user tidak tersedia, default ke 7 tahun")
             age = 7
-        level = "mudah"
+
+        if self.user and "current_level" in self.user:
+            level = self.user["current_level"]
+        else:
+            level = "mudah"
 
         self.game = GameManager(self.items, age=age, level=level, max_time=60)
         self.question = self.game.start_game()
@@ -155,8 +159,20 @@ class GameScreen:
         )
         self.title_label.pack(side="left", padx=20)
 
+        self.stop_button = RoundedButton(
+             self.frame_header,
+             text="⛔ Berhenti",
+             command=self.stop_game,
+             width=140,
+             height=40,
+             bg_color="#E74C3C",
+             hover_color="#C0392B"
+             )
+        self.stop_button.pack(side="left", padx=10)
+
         self.frame_info = tk.Frame(self.frame_header, bg=HEADER_BG)
         self.frame_info.pack(side="right", padx=20, pady=6)
+        self.session_ended = False
 
         self.timer_canvas = tk.Canvas(self.frame_info, width=180, height=38,
                                       bg=HEADER_BG, highlightthickness=0)
@@ -287,8 +303,9 @@ class GameScreen:
         self.render_question()
 
     def show_result(self, score):
-        if self.session_id:
+        if self.session_id and not self.session_ended:
             end_session(self.session_id, score)
+            self.session_ended = True
             print("Session ended with score:", score)
             
         self.game_active = False
@@ -332,3 +349,18 @@ class GameScreen:
 
     def run(self):
         self.root.mainloop()
+    
+    def stop_game(self):
+        if not self.game_active:
+            return
+        print("Game dihentikan oleh orang tua")
+        
+        self.game_active = False
+        score = self.game.scoring.get_score()
+        
+        if self.session_id and not self.session_ended:
+            end_session(self.session_id, score)
+            self.session_ended = True
+            print("Session dihentikan manual. Score:", score)
+            
+        self.show_result(score)
