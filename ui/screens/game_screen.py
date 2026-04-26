@@ -7,6 +7,9 @@ from tkinter import font as tkfont
 from game.game_manager import GameManager
 from PIL import Image, ImageTk
 from game.api_client import get_active_anak, start_session, end_session
+from ai.agent import Agent
+from ai.environment import get_state, get_reward, apply_action
+from game.api_client import update_level, get_current_user
 
 IMAGES = ["airplane", "ant", "apple", "bicycle", "blueberry", "broccoli", "bulldozer",
           "capung", "car", "cat", "clownfish", "dog", "dolphin", "duck",
@@ -95,7 +98,14 @@ class GameScreen:
         self.root.resizable(False, False)
 
         self.mode = mode
-        self.user = get_active_anak()
+        user_id = get_current_user()
+        print("USER_ID dari web:", user_id)
+        
+        if user_id:
+            self.user = get_active_anak(user_id)
+        else:
+            self.user = None
+            
         if not self.user:
             print("Tidak ada anak aktif dari web!")
         else:
@@ -103,8 +113,10 @@ class GameScreen:
         
         if self.user:
             self.session_id = start_session(self.user["id"])
+            self.agent = Agent(self.user["id"])
             print("Session ID:", self.session_id)
         else:
+            self.agent = None
             self.session_id = None
 
         self.items = IMAGES if mode == "picture" else COLORS
@@ -140,7 +152,7 @@ class GameScreen:
         else:
             level = "mudah"
 
-        self.game = GameManager(self.items, age=age, level=level, max_time=60)
+        self.game = GameManager(self.items, age=age, level=level, max_time=20*60)
         self.question = self.game.start_game()
 
         # Header
@@ -287,6 +299,10 @@ class GameScreen:
             color = CORRECT if result else WRONG
             card.itemconfig(card._rect_id, fill=color)
 
+        if self.game.is_episode_finished():
+            print("Episode selesai → AI jalan")
+            self.process_ai_episode()
+
         if self.game.is_game_over():
             score = self.game.scoring.get_score()
             self.show_result(score)
@@ -305,6 +321,10 @@ class GameScreen:
     def show_result(self, score):
         if self.session_id and not self.session_ended:
             end_session(self.session_id, score)
+            if self.user:
+                print("Update level ke database:", self.game.level)
+                update_level(self.user["id"], self.game.level)
+
             self.session_ended = True
             print("Session ended with score:", score)
             
@@ -364,3 +384,36 @@ class GameScreen:
             print("Session dihentikan manual. Score:", score)
             
         self.show_result(score)
+    
+    def process_ai_episode(self):
+        if not self.agent:
+            return
+        
+        #performa
+        persentase = self.game.get_episode_performance()
+        level = self.game.level
+        
+        print("Performa:", persentase, "Level:", level)
+        
+        #state
+        state = get_state(level, persentase)
+        
+        # 3. pilih action
+        action = self.agent.choose_action(state)
+        
+        # reward
+        reward = get_reward(persentase)
+        
+        #next level
+        new_level = apply_action(level, action)
+        print(f"[LEVEL UPDATE] {level} → {new_level}")
+        
+        #next state
+        next_state = get_state(new_level, persentase)
+        
+        #update Q-table
+        self.agent.learn(state, action, reward, next_state)
+        print(f"[AI] State: {state} → Action: {action} → Level baru: {new_level}")
+        
+        # reset episode
+        self.game.reset_episode(new_level)

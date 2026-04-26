@@ -16,10 +16,10 @@ def start_session(anak_id):
         return None
 
 
-def get_active_anak():
+def get_active_anak(user_id):
     for _ in range(3):  # retry
         try:
-            response = requests.get(f"{BASE_URL}/api/get_active_anak")
+            response = requests.get(f"{BASE_URL}/api/get_active_anak", params={"user_id": user_id})
             data = response.json()
 
             if data.get("status") == "success":
@@ -28,6 +28,18 @@ def get_active_anak():
         except Exception as e:
             print("Error get_active_anak:", e)
             time.sleep(1)
+
+    return None
+
+def get_current_user():
+    try:
+        response = requests.get(f"{BASE_URL}/api/get_current_user")
+        data = response.json()
+
+        if data.get("status") == "success":
+            return data.get("user_id")
+    except Exception as e:
+        print("Error get_current_user:", e)
 
     return None
 
@@ -43,3 +55,15 @@ def end_session(session_id, skor):
         )
     except Exception as e:
         print("Error end_session:", e)
+
+def update_level(anak_id, level):
+    try:
+        requests.post(
+            f"{BASE_URL}/api/update_level",
+            json={
+                "anak_id": anak_id,
+                "level": level
+            }
+        )
+    except Exception as e:
+        print("Error update_level:", e)

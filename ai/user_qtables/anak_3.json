@@ -1,0 +1,47 @@
+{
+    "S0": {
+        "turun": 0,
+        "tetap": 0,
+        "naik": 0
+    },
+    "S1": {
+        "turun": 2.5,
+        "tetap": 0,
+        "naik": 2.5
+    },
+    "S2": {
+        "turun": 18.549374999999998,
+        "tetap": 0,
+        "naik": 0
+    },
+    "S3": {
+        "turun": 0,
+        "tetap": 0,
+        "naik": 0
+    },
+    "S4": {
+        "turun": 0,
+        "tetap": 0,
+        "naik": 0
+    },
+    "S5": {
+        "turun": 11.418125,
+        "tetap": 0,
+        "naik": 0
+    },
+    "S6": {
+        "turun": 0,
+        "tetap": 0,
+        "naik": 0
+    },
+    "S7": {
+        "turun": 0,
+        "tetap": 0,
+        "naik": 0
+    },
+    "S8": {
+        "turun": 0,
+        "tetap": 0,
+        "naik": 0
+    }
+}
