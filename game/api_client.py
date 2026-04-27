@@ -43,13 +43,14 @@ def get_current_user():
 
     return None
 
-def end_session(session_id, skor):
+def end_session(session_id, skor, current_level):
     try:
         requests.post(
             f"{BASE_URL}/api/end_session",
             json={
                 "session_id": session_id,
-                "skor": skor
+                "skor": skor,
+                "level": current_level
             }
         )
     except Exception as e:

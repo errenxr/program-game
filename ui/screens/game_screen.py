@@ -241,7 +241,13 @@ class GameScreen:
             color = TIMER_CRIT
 
         self.timer_canvas.itemconfig(self._timer_rect, fill=color)
-        self.timer_canvas.itemconfig(self._timer_text_id, text=f"⏱  {remaining} detik")
+
+        minutes = remaining // 60
+        seconds = remaining % 60
+        self.timer_canvas.itemconfig(
+            self._timer_text_id,
+            text=f"⏱  {minutes:02}:{seconds:02}"
+        )
 
         if remaining > 0:
             self.root.after(1000, self.update_timer)
@@ -320,10 +326,9 @@ class GameScreen:
 
     def show_result(self, score):
         if self.session_id and not self.session_ended:
-            end_session(self.session_id, score)
+            end_session(self.session_id, score, self.game.level)
             if self.user:
                 print("Update level ke database:", self.game.level)
-                update_level(self.user["id"], self.game.level)
 
             self.session_ended = True
             print("Session ended with score:", score)
@@ -379,7 +384,7 @@ class GameScreen:
         score = self.game.scoring.get_score()
         
         if self.session_id and not self.session_ended:
-            end_session(self.session_id, score)
+            end_session(self.session_id, score, self.game.level)
             self.session_ended = True
             print("Session dihentikan manual. Score:", score)
             
