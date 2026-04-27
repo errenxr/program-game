@@ -30,20 +30,19 @@ def get_state(level, persentase):
 def get_reward(persentase, level, action):
     performa = get_performance_category(persentase)
     
-    # Reward dasar berdasarkan performa
     base_reward = 10 if persentase >= 80 else (5 if persentase >= 50 else -5)
     
-    # Bonus/penalti berdasarkan ketepatan keputusan
+    
     if performa == "tinggi" and action == "naik":
-        bonus = +5   # keputusan tepat: naikkan tantangan
+        bonus = +5   
     elif performa == "tinggi" and action == "turun":
-        bonus = -8   # keputusan salah: terlalu mudah
+        bonus = -8   
     elif performa == "rendah" and action == "turun":
-        bonus = +5   # keputusan tepat: turunkan kesulitan
+        bonus = +5  
     elif performa == "rendah" and action == "naik":
-        bonus = -8   # keputusan salah: terlalu sulit
+        bonus = -8   
     elif performa == "cukup" and action == "tetap":
-        bonus = +3   # keputusan tepat: pertahankan
+        bonus = +3  
     else:
         bonus = 0
     

@@ -402,7 +402,7 @@ class GameScreen:
         action = self.agent.choose_action(state)
         
         # reward
-        reward = get_reward(persentase)
+        reward = get_reward(persentase, level, action)
         
         #next level
         new_level = apply_action(level, action)
