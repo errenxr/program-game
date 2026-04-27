@@ -159,7 +159,7 @@ class GameScreen:
         self.frame_header = tk.Frame(self.root, bg=HEADER_BG)
         self.frame_header.pack(fill="x")
 
-        title_text = "✨ Pilih satu gambar ✨" if self.mode == "picture" else "🎨 Pilih satu warna 🎨"
+        title_text = "✨ Pilih satu gambar ✨" if self.mode == "picture" else "Pilih satu warna"
 
         self.title_label = tk.Label(
             self.frame_header,
@@ -173,7 +173,7 @@ class GameScreen:
 
         self.stop_button = RoundedButton(
              self.frame_header,
-             text="⛔ Berhenti",
+             text="Berhenti",
              command=self.stop_game,
              width=140,
              height=40,
@@ -259,7 +259,7 @@ class GameScreen:
         cols = 4
 
         self.progress_label.config(
-            text=f"📊 {len(self.game.current_selected_items)} / {len(self.game.base_images)}"
+            text=f" {len(self.game.current_selected_items)} / {len(self.game.base_images)}"
         )
 
         for index, item in enumerate(self.question):
@@ -347,7 +347,7 @@ class GameScreen:
         make_rounded_rect(card_canvas, 0, 0, 414, 294, r=30,
                           fill="#ffffff", outline=ACCENT1, width=2)
 
-        card_canvas.create_text(207, 50, text="🎉 Hore, Selesai! 🎉",
+        card_canvas.create_text(207, 50, text="Hore, Selesai!",
                                 font=("Nunito", 18, "bold"), fill=TITLE_FG)
 
         card_canvas.create_text(207, 175, text=str(score),
@@ -355,7 +355,7 @@ class GameScreen:
 
         btn = RoundedButton(
             frame,
-            text="🏠  Kembali ke Menu",
+            text="Kembali ke Menu",
             command=self.back_to_menu,
             width=220, height=50
         )
@@ -398,7 +398,7 @@ class GameScreen:
         #state
         state = get_state(level, persentase)
         
-        # 3. pilih action
+        #pilih action
         action = self.agent.choose_action(state)
         
         # reward

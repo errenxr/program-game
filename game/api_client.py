@@ -17,7 +17,7 @@ def start_session(anak_id):
 
 
 def get_active_anak(user_id):
-    for _ in range(3):  # retry
+    for _ in range(3):
         try:
             response = requests.get(f"{BASE_URL}/api/get_active_anak", params={"user_id": user_id})
             data = response.json()
@@ -43,7 +43,6 @@ def get_current_user():
 
     return None
 
-# ================= END SESSION =================
 def end_session(session_id, skor):
     try:
         requests.post(

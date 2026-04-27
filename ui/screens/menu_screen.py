@@ -127,7 +127,7 @@ class MenuScreen:
 
         tk.Label(
             header,
-            text="🧠  Focura  🧠",
+            text="Focura",
             font=("Nunito", 18, "bold"),  # sedikit diperkecil
             fg="#ffffff",
             bg=HEADER_BG
@@ -147,7 +147,7 @@ class MenuScreen:
 
         tk.Label(
             self.frame,
-            text="Latih ingatanmu dengan cara yang menyenangkan! 🌟",
+            text="Latih ingatanmu dengan cara yang menyenangkan!",
             font=("Nunito", 12),
             bg=BG,
             fg="#999999"

@@ -57,6 +57,5 @@ def apply_action(level, action):
         index = min(index + 1, 2)
     elif action == "turun":
         index = max(index - 1, 0)
-    # jika 'tetap' → tidak berubah
 
     return levels[index]
