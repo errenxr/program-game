@@ -1,7 +1,7 @@
 import requests
 import time
 
-BASE_URL = "http://127.0.0.1:5000"
+BASE_URL = "http://10.193.182.65:5000"
 
 def start_session(anak_id):
     try:

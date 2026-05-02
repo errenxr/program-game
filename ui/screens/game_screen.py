@@ -1,9 +1,10 @@
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-
+from hardware.rfid_reader import RFIDReader
+from hardware.rfid_map import RFID_MAP
+from hardware.led_controller import LEDController
 import tkinter as tk
-from tkinter import font as tkfont
 from game.game_manager import GameManager
 from PIL import Image, ImageTk
 from game.api_client import get_active_anak, start_session, end_session
@@ -96,6 +97,8 @@ class GameScreen:
         self.root = root
         self.root.geometry("1024x600")
         self.root.resizable(False, False)
+        self.rfid_reader = RFIDReader()
+        self.led = LEDController()
 
         self.mode = mode
         user_id = get_current_user()
@@ -226,6 +229,40 @@ class GameScreen:
         self.buttons = []
         self.render_question()
         self.update_timer()
+        self.check_rfid()
+        self.root.protocol("WM_DELETE_WINDOW", self.on_close)
+
+    def on_close(self):
+        self.rfid_reader.cleanup()
+        self.led.cleanup()
+        self.root.destroy()
+    
+    def check_rfid(self):
+        if not self.game_active:
+            return
+        
+        uid = self.rfid_reader.read_uid()
+        if uid:
+            uid = uid.strip().upper()
+            print("UID terbaca:", uid)
+            
+            if uid in RFID_MAP:
+                item = RFID_MAP[uid]
+                print("Item hasil mapping:", item)
+                
+                if item in self.question:
+                    self.handle_click(item)
+                
+                else:
+                    print("Item tidak ada di soal sekarang")
+            
+            else:
+                print("Kartu tidak terdaftar!")
+        
+        else:
+            print("UID terbaca: None")
+        
+        self.root.after(200, self.check_rfid)  
 
     def update_timer(self):
         if not self.game_active:
@@ -299,6 +336,15 @@ class GameScreen:
             return
 
         result = self.game.select_item(item)
+        print("RESULT:", result)
+
+        if result:
+            print("LED HIJAU NYALA")
+            self.led.green_on()
+        else:
+            print("LED MERAH NYALA")
+            self.led.red_on()
+
         card = self.button_map.get(item)
 
         if card:
