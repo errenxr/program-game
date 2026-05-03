@@ -14,8 +14,8 @@ from game.api_client import update_level, get_current_user
 
 IMAGES = ["airplane", "ant", "apple", "bicycle", "blueberry", "broccoli", "bulldozer",
           "capung", "car", "cat", "clownfish", "dog", "dolphin", "duck",
-          "fish", "frog", "gurita", "heli", "koala", "lion", "monkey", "mushroom",
-          "penyu", "pilot", "rabbit", "rhinoceros", "sheep", "siput", "sun", "terong",
+          "fish", "frog", "gurita", "heli", "koala", "lion", "lobak", "monkey", "mushroom",
+          "penyu", "pilot", "pinguin", "rabbit", "rhinoceros", "sheep", "siput", "sun", "terong",
           "tiger", "tomato", "train", "watermelon"]
 
 COLORS = ["red", "blue", "pink", "green", "yellow", "darkpurple", "orange", "peach", "darkgrey", "lightblue", "wine", "navy"]
@@ -239,6 +239,7 @@ class GameScreen:
     
     def check_rfid(self):
         if not self.game_active:
+            # Jangan lupa hentikan loop jika game tidak aktif
             return
         
         uid = self.rfid_reader.read_uid()
@@ -252,17 +253,13 @@ class GameScreen:
                 
                 if item in self.question:
                     self.handle_click(item)
-                
+                    
                 else:
                     print("Item tidak ada di soal sekarang")
             
             else:
                 print("Kartu tidak terdaftar!")
-        
-        else:
-            print("UID terbaca: None")
-        
-        self.root.after(200, self.check_rfid)  
+        self.root.after(300, self.check_rfid)  
 
     def update_timer(self):
         if not self.game_active:
