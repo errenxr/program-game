@@ -102,7 +102,7 @@ class RFIDReader:
                 return None
 
             # STEP 4: Konversi UID
-            uid_hex = ''.join(format(b, '02X') for b in uid_bytes[:4])
+            uid_hex = ''.join(format(b, '02X') for b in uid_bytes)
 
             # ============================================================
             # STEP 5: Debounce berbasis WAKTU saja (kunci perbaikan)
