@@ -273,6 +273,9 @@ class GameScreen:
                 print(f"Gagal load gambar: {name} -> {e}")
 
         self.buttons = []
+        
+        # Flag agar hasil pengujian ukuran card hanya dicetak sekali
+        self.card_size_tested = False
         self.render_question()
         self.update_timer()
         self.check_rfid()
@@ -397,6 +400,23 @@ class GameScreen:
             card.grid(row=row, column=col, padx=12, pady=10)
             self.buttons.append(card)
             self.button_map[item] = card
+        # ==========================================================
+        # PENGUJIAN UKURAN CARD
+        # Hanya ditampilkan satu kali saat aplikasi pertama dijalankan
+        # ==========================================================
+        if not self.card_size_tested:
+            self.root.update_idletasks()
+            print("\n==============================================")
+            print(" HASIL PENGUJIAN UKURAN CARD ")
+            print("==============================================")
+            
+            for i, card in enumerate(self.buttons):
+                print(
+                    f"Card {i+1} : "
+                    f"{card.winfo_width()} x {card.winfo_height()} pixel"
+                )
+            print("==============================================\n")
+            self.card_size_tested = True
 
     def _card_hover(self, card, entering):
         if self.is_locked:
